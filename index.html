@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Consulta de Enxoval</title>
+
+  <!-- Fonte Montserrat -->
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
+
+  <!-- CSS personalizado -->
+  <link rel="stylesheet" href="style.css">
+
+  <!-- Font Awesome (opcional) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+
+  <!-- SheetJS -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js" defer></script>
+</head>
+<body>
+
+  <header>
+    <div class="header-content">
+     <!-- <img src="img/logos.png" alt="Logo" class="logo">-->
+      <h1>Controles de Enxoval</h1>
+     <!-- <img src="img/topo.png" alt="Topo" class="topo-img">-->
+    </div>
+  </header>
+
+<main id="areaParaPDF">
+  <div class="conteudo">
+
+    <!-- Coluna da esquerda (vertical) -->
+    <div class="coluna-esquerda">
+
+      <div class="relatorio">
+        <h2>Relatórios</h2>
+        <div class="btn-group">
+          <label>
+            <input type="radio" id="rel-enxoval" name="relatorio" value="enxoval" style="display:none;" checked>
+            <label for="rel-enxoval" class="toggle-btn">Enxoval</label>
+          </label>
+          <label>
+            <input type="radio" id="rel-cobertores" name="relatorio" value="cobertores" style="display:none;">
+            <label for="rel-cobertores" class="toggle-btn">Cobertores</label>
+          </label>
+          <label>
+            <input type="radio" id="rel-lencois" name="relatorio" value="lencois" style="display:none;">
+            <label for="rel-lencois" class="toggle-btn">Lençóis</label>
+
+          </label>
+        </div>
+      </div>
+
+      <div class="filtros">
+        <h2>Período</h2>
+
+        <label for="anoSelect">Ano:</label>
+        <select id="anoSelect"></select>
+
+        <label for="mesSelect">Mês:</label>
+        <select id="mesSelect">
+          <option value="0">Todos</option>
+          <option value="1">Janeiro</option>
+          <option value="2">Fevereiro</option>
+          <option value="3">Março</option>
+          <option value="4">Abril</option>
+          <option value="5">Maio</option>
+          <option value="6">Junho</option>
+          <option value="7">Julho</option>
+          <option value="8">Agosto</option>
+          <option value="9">Setembro</option>
+          <option value="10">Outubro</option>
+          <option value="11">Novembro</option>
+          <option value="12">Dezembro</option>
+        </select>
+      </div>
+
+      <div class="fechamento">
+        <h2>Fechamento</h2>
+        <table>
+          <tbody>
+            <tr>
+              <td>Total sujo (KG's):</td>
+              <td id="totalSujo">0,0</td>
+            </tr>
+            <tr>
+              <td>Total limpo (KG's):</td>
+              <td id="totalLimpo">0,0</td>
+            </tr>
+            <tr>
+              <td>Pendência total (KG's):</td>
+              <td id="pendenciaTotal">0,0</td>
+            </tr>
+            <tr>
+              <td>Pendência total com 10% (KG's):</td>
+              <td id="pendenciaTotal10">0,0</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Novo container Exportar relatório -->
+      <div class="exportar-relatorio">
+        <h2>Exportar relatório</h2>
+        <button id="btnExportarExcel">Exportar em excel</button>
+        <button id="btnExportarPDF">Exportar em PDF</button>
+      </div>
+
+    </div>
+
+    <!-- Coluna da direita (tabela) -->
+    <div class="dados">
+      <h2 id="tituloTabela">Tabela de dados</h2>
+      <div id="excelData">Carregando dados...</div>
+    </div>
+
+  </div>
+</main>
+
+
+
+<script src="script.js"></script>
+
+</body>
+</html>
