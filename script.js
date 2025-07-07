@@ -1,6 +1,6 @@
 window.addEventListener('load', () => {
   let groupedData = {};
-  let abaAtual = 'enxoval'; // Aba padrão
+  let abaAtual = 'enxoval';
 
   const anoSelect = document.getElementById('anoSelect');
   const mesSelect = document.getElementById('mesSelect');
@@ -23,7 +23,9 @@ window.addEventListener('load', () => {
   function sortDatesBR(a, b) {
     const [dayA, monthA, yearA] = a.split('/');
     const [dayB, monthB, yearB] = b.split('/');
-    return new Date(`${yearA}-${monthA}-${dayA}`) - new Date(`${yearB}-${monthB}-${dayB}`);
+    const dateA = new Date(`${yearA}-${monthA}-${dayA}`);
+    const dateB = new Date(`${yearB}-${monthB}-${dayB}`);
+    return dateA - dateB;
   }
 
   function preencherAnos() {
@@ -59,16 +61,13 @@ window.addEventListener('load', () => {
     const primeiroDia = datasFiltradas[0];
     const ultimoDia = datasFiltradas[datasFiltradas.length - 1];
 
-    let html = `<table id="tabela-dados">
-      <thead>
-        <tr>
-          <th>Data</th>
-          <th>Sujo (KG's)</th>
-          <th>Limpo (KG's)</th>
-          <th>Pendência c/ 10% (KG's)</th>
-        </tr>
-      </thead>
-      <tbody>`;
+    let html = `<table><thead>
+      <tr>
+        <th>Data</th>
+        <th>Sujo (KG's)</th>
+        <th>Limpo (KG's)</th>
+        <th>Pendência c/ 10% (KG's)</th>
+      </tr></thead><tbody>`;
 
     let totalSujo = 0;
     let totalLimpo = 0;
@@ -118,7 +117,7 @@ window.addEventListener('load', () => {
   function atualizarFechamento(sujo, limpo, pendencia, pendencia10) {
     const formatarSemSinal = num => num.toFixed(1).replace('.', ',');
     const formatarComSinal = num => {
-      const sinal = num > 0 ? '+' : num < 0 ? '-' : '';
+      const sinal = (num > 0) ? '+' : (num < 0) ? '-' : '';
       return `${sinal}${Math.abs(num).toFixed(1).replace('.', ',')}`;
     };
 
@@ -127,10 +126,11 @@ window.addEventListener('load', () => {
     document.getElementById('pendenciaTotal').innerText = formatarComSinal(pendencia);
     document.getElementById('pendenciaTotal10').innerText = formatarComSinal(pendencia10);
 
-    document.getElementById('pendenciaTotal').style.color =
-      pendencia > 0 ? 'green' : pendencia < 0 ? 'red' : 'inherit';
-    document.getElementById('pendenciaTotal10').style.color =
-      pendencia10 > 0 ? 'green' : pendencia10 < 0 ? 'red' : 'inherit';
+    const pendenciaElem = document.getElementById('pendenciaTotal');
+    const pendencia10Elem = document.getElementById('pendenciaTotal10');
+
+    pendenciaElem.style.color = pendencia > 0 ? 'green' : (pendencia < 0 ? 'red' : 'inherit');
+    pendencia10Elem.style.color = pendencia10 > 0 ? 'green' : (pendencia10 < 0 ? 'red' : 'inherit');
   }
 
   function carregarDadosDaAba(nomeAba) {
@@ -151,7 +151,8 @@ window.addEventListener('load', () => {
           let dataFormatada;
 
           if (typeof dataRaw === 'number') {
-            dataFormatada = formatDateBRFromDateObj(excelDateToJSDate(dataRaw));
+            const dataObj = excelDateToJSDate(dataRaw);
+            dataFormatada = formatDateBRFromDateObj(dataObj);
           } else {
             dataFormatada = dataRaw;
           }
@@ -179,7 +180,8 @@ window.addEventListener('load', () => {
       });
   }
 
-  document.querySelectorAll('input[name="relatorio"]').forEach(radio => {
+  const radiosRelatorio = document.querySelectorAll('input[name="relatorio"]');
+  radiosRelatorio.forEach(radio => {
     radio.addEventListener('change', () => {
       if (radio.checked) {
         abaAtual = radio.value;
@@ -189,49 +191,58 @@ window.addEventListener('load', () => {
     });
   });
 
+  // Selecionar botão "Enxoval" por padrão e carregar dados
+  document.getElementById('rel-enxoval').checked = true;
+  tituloTabela.textContent = 'Enxoval - registros';
+  carregarDadosDaAba(abaAtual);
+
   anoSelect.addEventListener('change', filtrarEDesenharTabela);
   mesSelect.addEventListener('change', filtrarEDesenharTabela);
 
-  // Selecionar Enxoval por padrão
-  document.getElementById('rel-enxoval').checked = true;
-  tituloTabela.textContent = "Enxoval - registros";
-  carregarDadosDaAba(abaAtual);
-
-  // Exportar em PDF com scroll para topo
+  // Exportar em PDF
   document.getElementById("btnExportarPDF").addEventListener("click", () => {
-    window.scrollTo(0, 0);
-    setTimeout(() => {
-      window.print();
-    }, 300);
+    window.print();
   });
 
-  // Exportar em Excel baseado na tabela visível
+  // Exportar em Excel
   document.getElementById("btnExportarExcel").addEventListener("click", () => {
-    const table = document.getElementById("tabela-dados");
-    if (!table) return;
+    const tabela = document.querySelector("#excelData table");
+    if (!tabela) return alert("Nenhuma tabela para exportar.");
 
-    const ws = XLSX.utils.table_to_sheet(table, {
-      raw: false,
-      cellDates: false
-    });
+    const linhas = Array.from(tabela.querySelectorAll("tr"));
+    const dados = linhas.map(linha => Array.from(linha.querySelectorAll("th, td")).map(td => td.innerText));
 
-    // Centralizar colunas e definir largura
-    const cols = [15, 20, 20, 30];
-    ws['!cols'] = cols.map(w => ({ wch: w }));
-    Object.keys(ws).forEach(cell => {
-      if (!cell.startsWith('!')) {
-        ws[cell].s = {
-          alignment: { horizontal: "center", vertical: "center" }
-        };
+    const worksheet = XLSX.utils.aoa_to_sheet(dados);
+
+    const range = XLSX.utils.decode_range(worksheet['!ref']);
+    for (let R = range.s.r; R <= range.e.r; ++R) {
+      for (let C = range.s.c; C <= range.e.c; ++C) {
+        const cell_address = XLSX.utils.encode_cell({ r: R, c: C });
+        const cell = worksheet[cell_address];
+        if (cell) {
+          cell.t = 's';
+          cell.s = {
+            alignment: { horizontal: "center", vertical: "center" }
+          };
+        }
       }
-    });
+    }
 
-    const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, "Relatório");
+    worksheet['!cols'] = [
+      { wch: 15 },  // Data
+      { wch: 18 },  // Sujo
+      { wch: 18 },  // Limpo
+      { wch: 25 }   // Pendência
+    ];
 
-    const data = new Date();
-    const nomeArquivo = `relatorio_${abaAtual}_${data.getFullYear()}-${(data.getMonth() + 1)}.xlsx`;
+    const tipoRelatorio = abaAtual || "dados";
+    const ano = anoSelect.value !== "0" ? anoSelect.value : "todos";
+    const mes = mesSelect.value !== "0" ? mesSelect.value.padStart(2, '0') : "todos";
+    const nomeArquivo = `relatorio_${tipoRelatorio}_${ano}_${mes}.xlsx`;
 
-    XLSX.writeFile(wb, nomeArquivo);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Relatório");
+    XLSX.writeFile(workbook, nomeArquivo);
   });
+
 });
