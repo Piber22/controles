@@ -23,7 +23,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     if (valido) {
       erro.textContent = '';
-      window.location.href = 'index.html';
+      window.location.href = 'controles.html';
     } else {
       erro.textContent = 'Usuário ou senha inválidos.';
       setTimeout(() => {
