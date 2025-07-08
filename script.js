@@ -244,5 +244,18 @@ window.addEventListener('load', () => {
     XLSX.utils.book_append_sheet(workbook, worksheet, "Relatório");
     XLSX.writeFile(workbook, nomeArquivo);
   });
+    // Efeito de borda laranja dinâmica seguindo o mouse nos elementos com classe .tracked-glow
+    const trackedElements = document.querySelectorAll('.tracked-glow');
+
+    window.addEventListener('mousemove', e => {
+      trackedElements.forEach(el => {
+        const rect = el.getBoundingClientRect();
+        const x = ((e.clientX - rect.left) / rect.width) * 100;
+        const y = ((e.clientY - rect.top) / rect.height) * 100;
+        el.style.setProperty('--x', `${x}%`);
+        el.style.setProperty('--y', `${y}%`);
+      });
+    });
+
 
 });

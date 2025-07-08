@@ -26,7 +26,7 @@ header {
 header h1 {
   color: #ffffff;
   font-size: 1.7rem;
-  font-weight: 600; /* ou 700 para mais impacto */
+  font-weight: 600;
 }
 
 .header-content {
@@ -49,13 +49,17 @@ header h1 {
   height: 74px;
   width: auto;
 }
+.logo-mobile {
+  display: none;
+}
+
 
 main {
   width: 100%;
   max-width: 1200px;
   margin: 0 auto;
   padding: 20px;
-  position: relative; /* Necessário para posicionar .fundo dentro */
+  position: relative;
 }
 .conteudo {
   display: flex;
@@ -72,17 +76,62 @@ main {
   flex: 1;
 }
 
-.relatorio {
+.relatorio,
+.fechamento,
+.exportar-relatorio,
+.dados,
+.filtros {
   text-align: center;
   height: auto;
-  width-min: 200px;
   flex: 1;
   background-color: #201F20;
   padding: 20px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.8);
   border-radius: 10px;
   transition: height 0.3s ease;
+  position: relative;
+  z-index: 1;
 }
+
+/* --- Borda com efeito mouse-tracking glow --- */
+.tracked-glow::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  padding: 2px;
+  border-radius: 10px;
+  background: radial-gradient(circle at var(--x, 50%) var(--y, 50%), #E94B22 0%, transparent 50%);
+  mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: destination-out;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+  opacity: 1;
+  z-index: 2;
+}
+
+/* Aplicar classe de glow */
+.relatorio,
+.fechamento,
+.exportar-relatorio,
+.dados,
+.filtros {
+  position: relative;
+}
+.relatorio.tracked-glow,
+.fechamento.tracked-glow,
+.exportar-relatorio.tracked-glow,
+.dados.tracked-glow,
+.filtros.tracked-glow {
+  position: relative;
+}
+
+/* Botões */
 .btn-group {
   display: flex;
   justify-content: center;
@@ -102,46 +151,25 @@ main {
   user-select: none;
   transition: background-color 0.3s, color 0.3s;
 }
-
-/* Quando o radio está checado, muda o estilo do span */
 input[type="radio"]:checked + .toggle-btn {
   background-color: #2b2a2b;
   color: white;
 }
 
-
-
-
-
-.fechamento {
-  text-align: center;
-  height: auto;
-  flex: 1;
-  background-color: #201F20;
-  padding: 20px;
-  padding-left: 80px;
-  padding-right: 80px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.8);
-  border-radius: 10px;
-  transition: height 0.3s ease;
-}
 .fechamento table {
   width: 100%;
   border-collapse: collapse;
   color: white;
   font-size: 14px;
 }
-
 .fechamento td {
   padding: 6px 8px;
   border-bottom: 1px solid #444;
 }
-
 .fechamento td:first-child {
   text-align: left;
   font-weight: 400;
 }
-
 .fechamento td:last-child {
   text-align: right;
 }
@@ -149,19 +177,7 @@ input[type="radio"]:checked + .toggle-btn {
   font-weight: bold;
 }
 
-
-.exportar-relatorio {
-  text-align: center;
-  height: auto;
-  flex: 1;
-  background-color: #201F20;
-  padding: 20px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.8);
-  border-radius: 10px;
-  transition: height 0.3s ease;
-}
 .exportar-relatorio button {
-  /* Herdar o mesmo estilo do .toggle-btn */
   font-family: 'Montserrat', sans-serif;
   font-size: 16px;
   display: inline-block;
@@ -176,29 +192,7 @@ input[type="radio"]:checked + .toggle-btn {
   transition: background-color 0.3s, color 0.3s;
 }
 
-
-
-.dados {
-  text-align: center;
-  height: auto;
-  flex: 1;
-  background-color: #201F20;
-  padding: 20px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.8);
-  border-radius: 10px;
-  transition: height 0.3s ease;
-}
-
-.filtros {
-  text-align: center;
-  height: 110px;
-  flex: 1;
-  background-color: #201F20;
-  padding: 20px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.8);
-  border-radius: 10px;
-}
-
+/* Filtros */
 .filtros select {
   padding: 7px;
   border-radius: 4px;
@@ -207,7 +201,6 @@ input[type="radio"]:checked + .toggle-btn {
   color: white;
   font-size: 14px;
 }
-
 #anoSelect {
   margin-left: 40px;
   margin-right: 40px;
@@ -216,19 +209,17 @@ input[type="radio"]:checked + .toggle-btn {
   margin-left: 40px;
 }
 
-
 .exportar-relatorio h2,
 .fechamento h2,
 .relatorio h2,
 .dados h2,
 .filtros h2 {
   font-size: 1.4rem;
-  font-weight: 600; /* ou 700 para mais impacto */
+  font-weight: 600;
   margin-bottom: 10px;
 }
 
-
-/* Tabela gerada pelo SheetJS */
+/* Tabela SheetJS */
 #excelData table {
   top: 20px;
   width: 100%;
@@ -239,25 +230,20 @@ input[type="radio"]:checked + .toggle-btn {
   overflow: hidden;
   font-size: 12px;
 }
-
 #excelData th, #excelData td {
   padding: 6px 8px;
   border: 1px solid #444;
   text-align: center;
-
 }
-
 #excelData th {
   background-color: #201F20;
   color: white;
   font-weight: 600;
   text-transform: uppercase;
 }
-
 #excelData tr:nth-child(even) {
   background-color: #201F20;
 }
-
 #excelData tr:hover {
   background-color: #3a3a3a;
   transition: background-color 0.2s;
@@ -268,9 +254,7 @@ input[type="radio"]:checked + .toggle-btn {
     background-color: #201F20 !important;
     -webkit-print-color-adjust: exact;
     print-color-adjust: exact;
-    zoom
   }
-
   .exportar-relatorio,
   .btn-group,
   main {
@@ -283,11 +267,9 @@ input[type="radio"]:checked + .toggle-btn {
   .relatorio {
      display: none;
   }
-
   .filtros select {
     padding: 1px;
   }
-
   #anoSelect {
     margin-left: 10px;
     margin-right: 10px;
@@ -296,16 +278,14 @@ input[type="radio"]:checked + .toggle-btn {
     margin-left: 10px;
   }
   .fechamento {
-  text-align: center;
-  height: auto;
-  flex: 1;
-  background-color: #201F20;
-  padding: 20px;
-  padding-left: 20px; /*  */
-  padding-right: 20px; /*  */
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.8);
-  border-radius: 10px;
-  transition: height 0.3s ease;
+    text-align: center;
+    height: auto;
+    flex: 1;
+    background-color: #201F20;
+    padding: 20px 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.8);
+    border-radius: 10px;
+    transition: height 0.3s ease;
   }
   .fechamento table {
     width: 100%;
@@ -313,12 +293,10 @@ input[type="radio"]:checked + .toggle-btn {
     color: white;
     font-size: 14px;
   }
-
   .fechamento td {
     padding: 6px 8px;
     border-bottom: 1px solid #444;
   }
-
   @page {
     size: A4 portrait;
     margin: 10mm;
@@ -329,52 +307,48 @@ input[type="radio"]:checked + .toggle-btn {
   body {
     overflow-x: hidden;
   }
-
+  .logo-mobile {
+    display: inline;
+  }
+  .logo-desktop {
+    display: none;
+  }
   main {
     padding: 10px;
   }
-
   .conteudo {
     flex-direction: column;
     gap: 20px;
   }
-
   .coluna-esquerda,
   .dados {
     width: 100%;
   }
-
   .logo {
     left: 10px;
     height: 30px;
   }
-
   .topo-img {
     right: 10px;
     height: 50px;
   }
-
   .header-content {
     padding: 10px;
     flex-direction: column;
   }
-
   header h1 {
-    font-size: 1.5rem;
+    font-size: 2.0rem;
   }
-
   .toggle-btn {
     padding: 8px 16px;
     font-size: 14px;
   }
-
   .exportar-relatorio button {
     padding: 8px 16px;
     margin-left: 10px;
     font-size: 14px;
     margin-top: 8px;
   }
-
   .fechamento,
   .relatorio,
   .filtros,
@@ -384,11 +358,9 @@ input[type="radio"]:checked + .toggle-btn {
   .relatorio {
     margin-top: 10px;
   }
-
   table {
     font-size: 12px;
   }
-
   #anoSelect {
     margin-left: 10px;
     margin-right: 10px;
@@ -396,15 +368,14 @@ input[type="radio"]:checked + .toggle-btn {
   #mesSelect {
     margin-left: 10px;
   }
-
   #excelData table {
     font-size: 11px;
   }
-
   #tituloTabela {
     font-size: 1.2rem;
   }
 }
+
 .footer {
   background-color: #201F20;
   text-align: center;
@@ -417,6 +388,7 @@ input[type="radio"]:checked + .toggle-btn {
 .footer strong {
   color: #333;
 }
+
 /* --- INÍCIO DAS ANIMAÇÕES --- */
 @keyframes fadeSlideIn {
   from {
@@ -429,7 +401,6 @@ input[type="radio"]:checked + .toggle-btn {
   }
 }
 
-/* Container principal */
 .relatorio,
 .filtros,
 .dados,
@@ -439,7 +410,6 @@ input[type="radio"]:checked + .toggle-btn {
   animation: fadeSlideIn 0.6s ease forwards;
 }
 
-/* Delay escalonado para surgirem em sequência */
 .relatorio {
   animation-delay: 0.2s;
 }

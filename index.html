@@ -10,7 +10,6 @@
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
 
   <!-- Biblioteca AOS -->
-
   <link href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css" rel="stylesheet" />
 
   <!-- CSS personalizado -->
@@ -27,9 +26,10 @@
 
   <header>
     <div class="header-content">
-     <!-- <img src="img/logos.png" alt="Logo" class="logo">-->
-      <h1>Controles de Enxoval</h1>
-     <!-- <img src="img/topo.png" alt="Topo" class="topo-img">-->
+      <img src="img/login_logo.png" alt="Logo" class="logo logo-desktop">
+      <img src="img/logo.png" alt="Logo simplificada" class="logo logo-mobile">
+      <h1>Consultas</h1>
+      <!-- <img src="img/topo.png" alt="Topo" class="topo-img">-->
     </div>
   </header>
 
@@ -39,7 +39,7 @@
     <!-- Coluna da esquerda (vertical) -->
     <div class="coluna-esquerda">
 
-      <div class="relatorio">
+      <div class="relatorio tracked-glow">
         <h2>Relatórios</h2>
         <div class="btn-group">
           <label>
@@ -53,12 +53,11 @@
           <label>
             <input type="radio" id="rel-lencois" name="relatorio" value="lencois" style="display:none;">
             <label for="rel-lencois" class="toggle-btn">Lençóis</label>
-
           </label>
         </div>
       </div>
 
-      <div class="filtros">
+      <div class="filtros tracked-glow">
         <h2>Período</h2>
 
         <label for="anoSelect">Ano:</label>
@@ -82,7 +81,7 @@
         </select>
       </div>
 
-      <div class="fechamento">
+      <div class="fechamento tracked-glow">
         <h2>Fechamento</h2>
         <table>
           <tbody>
@@ -106,8 +105,7 @@
         </table>
       </div>
 
-      <!-- Novo container Exportar relatório -->
-      <div class="exportar-relatorio">
+      <div class="exportar-relatorio tracked-glow">
         <h2>Exportar relatório</h2>
         <button id="btnExportarExcel">Exportar em excel</button>
         <button id="btnExportarPDF">Exportar em PDF</button>
@@ -116,15 +114,13 @@
     </div>
 
     <!-- Coluna da direita (tabela) -->
-    <div class="dados">
+    <div class="dados tracked-glow">
       <h2 id="tituloTabela">Tabela de dados</h2>
       <div id="excelData">Carregando dados...</div>
     </div>
 
   </div>
 </main>
-
-
 
 <script src="script.js"></script>
 
