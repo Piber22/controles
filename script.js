@@ -2,8 +2,9 @@ window.addEventListener('load', () => {
   let groupedData = {};
   let abaAtual = 'enxoval';
 
-  const anoSelect = document.getElementById('anoSelect');
-  const mesSelect = document.getElementById('mesSelect');
+  // Novos inputs de data início e fim
+  const dataInicioInput = document.getElementById('dataInicio');
+  const dataFimInput = document.getElementById('dataFim');
   const excelDataDiv = document.getElementById('excelData');
   const tituloTabela = document.getElementById('tituloTabela');
 
@@ -20,6 +21,12 @@ window.addEventListener('load', () => {
     return `${day}/${month}/${year}`;
   }
 
+  function parseDateBRToDateObj(dataStr) {
+    // converte "dd/mm/yyyy" para Date()
+    const [day, month, year] = dataStr.split('/').map(x => parseInt(x));
+    return new Date(year, month - 1, day);
+  }
+
   function sortDatesBR(a, b) {
     const [dayA, monthA, yearA] = a.split('/');
     const [dayB, monthB, yearB] = b.split('/');
@@ -28,25 +35,14 @@ window.addEventListener('load', () => {
     return dateA - dateB;
   }
 
-  function preencherAnos() {
-    const anos = new Set();
-    Object.keys(groupedData).forEach(dataStr => {
-      const ano = dataStr.split('/')[2];
-      anos.add(ano);
-    });
-    const anosOrdenados = Array.from(anos).sort();
-    anoSelect.innerHTML = '<option value="0">Todos</option>' +
-      anosOrdenados.map(a => `<option value="${a}">${a}</option>`).join('');
-  }
-
   function filtrarEDesenharTabela() {
-    const anoFiltro = anoSelect.value;
-    const mesFiltro = parseInt(mesSelect.value);
+    const dataInicioVal = dataInicioInput.value ? new Date(dataInicioInput.value) : null;
+    const dataFimVal = dataFimInput.value ? new Date(dataFimInput.value) : null;
 
     let datasFiltradas = Object.keys(groupedData).filter(dataStr => {
-      const [day, month, year] = dataStr.split('/').map(x => parseInt(x));
-      if (anoFiltro != 0 && year != parseInt(anoFiltro)) return false;
-      if (mesFiltro !== 0 && month !== mesFiltro) return false;
+      const dataObj = parseDateBRToDateObj(dataStr);
+      if (dataInicioVal && dataObj < dataInicioVal) return false;
+      if (dataFimVal && dataObj > dataFimVal) return false;
       return true;
     });
 
@@ -171,7 +167,7 @@ window.addEventListener('load', () => {
           }
         });
 
-        preencherAnos();
+        // Preencher anos removido, não é mais necessário
         filtrarEDesenharTabela();
       })
       .catch(error => {
@@ -196,8 +192,9 @@ window.addEventListener('load', () => {
   tituloTabela.textContent = 'Enxoval - registros';
   carregarDadosDaAba(abaAtual);
 
-  anoSelect.addEventListener('change', filtrarEDesenharTabela);
-  mesSelect.addEventListener('change', filtrarEDesenharTabela);
+  // Trocar os eventos dos selects antigos pelos inputs de data
+  dataInicioInput.addEventListener('change', filtrarEDesenharTabela);
+  dataFimInput.addEventListener('change', filtrarEDesenharTabela);
 
   // Exportar em PDF
   document.getElementById("btnExportarPDF").addEventListener("click", () => {
@@ -235,27 +232,28 @@ window.addEventListener('load', () => {
       { wch: 25 }   // Pendência
     ];
 
+    // Gerar nome do arquivo com as datas no formato yyyyMMdd para melhor ordenação
     const tipoRelatorio = abaAtual || "dados";
-    const ano = anoSelect.value !== "0" ? anoSelect.value : "todos";
-    const mes = mesSelect.value !== "0" ? mesSelect.value.padStart(2, '0') : "todos";
-    const nomeArquivo = `relatorio_${tipoRelatorio}_${ano}_${mes}.xlsx`;
+    const dataInicioStr = dataInicioInput.value ? dataInicioInput.value.replace(/-/g, '') : 'inicio';
+    const dataFimStr = dataFimInput.value ? dataFimInput.value.replace(/-/g, '') : 'fim';
+    const nomeArquivo = `relatorio_${tipoRelatorio}_${dataInicioStr}_${dataFimStr}.xlsx`;
 
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, "Relatório");
     XLSX.writeFile(workbook, nomeArquivo);
   });
-    // Efeito de borda laranja dinâmica seguindo o mouse nos elementos com classe .tracked-glow
-    const trackedElements = document.querySelectorAll('.tracked-glow');
 
-    window.addEventListener('mousemove', e => {
-      trackedElements.forEach(el => {
-        const rect = el.getBoundingClientRect();
-        const x = ((e.clientX - rect.left) / rect.width) * 100;
-        const y = ((e.clientY - rect.top) / rect.height) * 100;
-        el.style.setProperty('--x', `${x}%`);
-        el.style.setProperty('--y', `${y}%`);
-      });
+  // Efeito de borda laranja dinâmica seguindo o mouse nos elementos com classe .tracked-glow
+  const trackedElements = document.querySelectorAll('.tracked-glow');
+
+  window.addEventListener('mousemove', e => {
+    trackedElements.forEach(el => {
+      const rect = el.getBoundingClientRect();
+      const x = ((e.clientX - rect.left) / rect.width) * 100;
+      const y = ((e.clientY - rect.top) / rect.height) * 100;
+      el.style.setProperty('--x', `${x}%`);
+      el.style.setProperty('--y', `${y}%`);
     });
-
+  });
 
 });
