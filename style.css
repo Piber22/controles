@@ -77,11 +77,36 @@ main {
   flex: 1;
 }
 
+.filtros {
+  text-align: center;
+  height: auto;
+  flex: 1;
+  background-color: #201F20;
+  padding: 20px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.8);
+  border-radius: 10px;
+  transition: height 0.3s ease;
+  position: relative;
+  z-index: 1;
+
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.filtros label {
+  font-size: 14px;
+  margin-left: 5px;
+}
+
+
+
 .relatorio,
 .fechamento,
 .exportar-relatorio,
-.dados,
-.filtros {
+.dados {
   text-align: center;
   height: auto;
   flex: 1;
@@ -195,6 +220,7 @@ input[type="radio"]:checked + .toggle-btn {
 
 /* Filtros */
 .filtros > input[type="date"] {
+  flex: 0 1 160px; /* largura mínima responsiva */
   font-family: 'Montserrat', sans-serif;
   padding: 7px;
   border-radius: 4px;
