@@ -456,6 +456,9 @@ input[type="radio"]:checked + .toggle-btn {
   .logo-desktop {
     display: none !important;
   }
+  header h1 {
+    font-size: 1.6rem;
+  }
   .tracked-glow::before {
     display: none !important;
   }
