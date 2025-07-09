@@ -466,7 +466,6 @@ input[type="radio"]:checked + .toggle-btn {
   background-color: #201F20;
   text-align: center;
   padding: 10px 10px;
-  font-size: 10px;
   color: #777;
 }
 .footer strong {
