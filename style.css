@@ -292,7 +292,9 @@ input[type="radio"]:checked + .toggle-btn {
   .header-content {
     position: relative;
   }
-
+  header h1 {
+    font-size: 1.6rem;
+  }
   .logo-desktop {
     display: block !important;
     position: absolute;
@@ -390,9 +392,7 @@ input[type="radio"]:checked + .toggle-btn {
     padding: 10px;
     flex-direction: column;
   }
-  header h1 {
-    font-size: 1.2rem;
-  }
+
   .toggle-btn {
     padding: 8px 16px;
     font-size: 14px;
@@ -455,9 +455,6 @@ input[type="radio"]:checked + .toggle-btn {
 @media print and (max-width: 768px) {
   .logo-desktop {
     display: none !important;
-  }
-  header h1 {
-    font-size: 1.6rem;
   }
   .tracked-glow::before {
     display: none !important;
