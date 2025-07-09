@@ -7,6 +7,9 @@ window.addEventListener('load', () => {
   const excelDataDiv = document.getElementById('excelData');
   const tituloTabela = document.getElementById('tituloTabela');
 
+  // Mostrar mensagem inicial
+  excelDataDiv.innerHTML = '<p>Carregando dados...</p>';
+
   function excelDateToJSDate(serial) {
     const utc_days = Math.floor(serial - 25569 + 1);
     const utc_value = utc_days * 86400 * 1000;
@@ -30,28 +33,27 @@ window.addEventListener('load', () => {
   }
 
   function filtrarEDesenharTabela() {
-  const dataInicioVal = dataInicioInput.value ? new Date(dataInicioInput.value) : null;
-  const dataFimVal = dataFimInput.value ? new Date(dataFimInput.value) : null;
+    const dataInicioVal = dataInicioInput.value ? new Date(dataInicioInput.value) : null;
+    const dataFimVal = dataFimInput.value ? new Date(dataFimInput.value) : null;
 
-  // Se ambos vazios, não mostrar dados, só mensagem
-  if (!dataInicioVal && !dataFimVal) {
-    excelDataDiv.innerHTML = '<p>Por favor, preencha o filtro de datas para exibir os dados.</p>';
-    atualizarFechamento(0, 0, 0, 0);
-    return;
-  }
+    if (!dataInicioVal && !dataFimVal) {
+      excelDataDiv.innerHTML = '<p>Por favor, preencha o filtro de datas para exibir os dados.</p>';
+      atualizarFechamento(0, 0, 0, 0);
+      return;
+    }
 
-  const datasFiltradas = Object.keys(groupedData).filter(dataStr => {
-    const dataObj = parseDateBRToDateObj(dataStr);
-    if (dataInicioVal && dataObj < dataInicioVal) return false;
-    if (dataFimVal && dataObj > dataFimVal) return false;
-    return true;
-  }).sort(sortDatesBR);
+    const datasFiltradas = Object.keys(groupedData).filter(dataStr => {
+      const dataObj = parseDateBRToDateObj(dataStr);
+      if (dataInicioVal && dataObj < dataInicioVal) return false;
+      if (dataFimVal && dataObj > dataFimVal) return false;
+      return true;
+    }).sort(sortDatesBR);
 
-  if (datasFiltradas.length === 0) {
-    excelDataDiv.innerHTML = '<p>Nenhum dado encontrado para o filtro selecionado.</p>';
-    atualizarFechamento(0, 0, 0, 0);
-    return;
-  }
+    if (datasFiltradas.length === 0) {
+      excelDataDiv.innerHTML = '<p>Nenhum dado encontrado para o filtro selecionado.</p>';
+      atualizarFechamento(0, 0, 0, 0);
+      return;
+    }
 
     const primeiroDia = datasFiltradas[0];
     const ultimoDia = datasFiltradas[datasFiltradas.length - 1];
@@ -122,6 +124,8 @@ window.addEventListener('load', () => {
   }
 
   function carregarDadosDaAba(nomeAba) {
+    excelDataDiv.innerHTML = '<p>Carregando dados...</p>';
+
     fetch(`dados/dados.xlsx?v=${Date.now()}`)
       .then(resp => {
         if (!resp.ok) throw new Error("Arquivo Excel não encontrado");
@@ -153,7 +157,13 @@ window.addEventListener('load', () => {
           }
         });
 
-        filtrarEDesenharTabela();
+        // Só desenha se filtro estiver preenchido
+        if (dataInicioInput.value || dataFimInput.value) {
+          filtrarEDesenharTabela();
+        } else {
+          excelDataDiv.innerHTML = '<p>Por favor, preencha o filtro de datas para exibir os dados.</p>';
+          atualizarFechamento(0, 0, 0, 0);
+        }
       })
       .catch(err => {
         excelDataDiv.innerText = 'Erro ao carregar a planilha.';
@@ -181,7 +191,7 @@ window.addEventListener('load', () => {
   dataInicioInput.addEventListener('change', filtrarEDesenharTabela);
   dataFimInput.addEventListener('change', filtrarEDesenharTabela);
 
-  // Exportar PDF com logo mobile/desktop correta
+  // Exportar PDF com logo correta
   document.getElementById("btnExportarPDF").addEventListener("click", () => {
     const isMobile = window.innerWidth <= 768;
     document.body.classList.add(isMobile ? 'print-mobile' : 'print-desktop');
@@ -228,7 +238,7 @@ window.addEventListener('load', () => {
     XLSX.writeFile(workbook, nomeArquivo);
   });
 
-  // Efeito glow de borda
+  // Efeito glow
   const trackedElements = document.querySelectorAll('.tracked-glow');
   window.addEventListener('mousemove', e => {
     trackedElements.forEach(el => {
