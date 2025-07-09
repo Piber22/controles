@@ -346,6 +346,11 @@ input[type="radio"]:checked + .toggle-btn {
     padding: 6px 8px;
     border-bottom: 1px solid #444;
   }
+  .tracked-glow::before {
+    display: none !important;
+  }
+
+
   @page {
     size: A4 portrait;
     margin: 0mm;
@@ -451,7 +456,9 @@ input[type="radio"]:checked + .toggle-btn {
   .logo-desktop {
     display: none !important;
   }
-
+  .tracked-glow::before {
+    display: none !important;
+  }
   .logo-mobile {
     display: inline !important;
     position: absolute;
