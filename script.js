@@ -2,7 +2,6 @@ window.addEventListener('load', () => {
   let groupedData = {};
   let abaAtual = 'enxoval';
 
-  // Novos inputs de data início e fim
   const dataInicioInput = document.getElementById('dataInicio');
   const dataFimInput = document.getElementById('dataFim');
   const excelDataDiv = document.getElementById('excelData');
@@ -22,31 +21,24 @@ window.addEventListener('load', () => {
   }
 
   function parseDateBRToDateObj(dataStr) {
-    // converte "dd/mm/yyyy" para Date()
-    const [day, month, year] = dataStr.split('/').map(x => parseInt(x));
+    const [day, month, year] = dataStr.split('/').map(Number);
     return new Date(year, month - 1, day);
   }
 
   function sortDatesBR(a, b) {
-    const [dayA, monthA, yearA] = a.split('/');
-    const [dayB, monthB, yearB] = b.split('/');
-    const dateA = new Date(`${yearA}-${monthA}-${dayA}`);
-    const dateB = new Date(`${yearB}-${monthB}-${dayB}`);
-    return dateA - dateB;
+    return parseDateBRToDateObj(a) - parseDateBRToDateObj(b);
   }
 
   function filtrarEDesenharTabela() {
     const dataInicioVal = dataInicioInput.value ? new Date(dataInicioInput.value) : null;
     const dataFimVal = dataFimInput.value ? new Date(dataFimInput.value) : null;
 
-    let datasFiltradas = Object.keys(groupedData).filter(dataStr => {
+    const datasFiltradas = Object.keys(groupedData).filter(dataStr => {
       const dataObj = parseDateBRToDateObj(dataStr);
       if (dataInicioVal && dataObj < dataInicioVal) return false;
       if (dataFimVal && dataObj > dataFimVal) return false;
       return true;
-    });
-
-    datasFiltradas.sort(sortDatesBR);
+    }).sort(sortDatesBR);
 
     if (datasFiltradas.length === 0) {
       excelDataDiv.innerHTML = '<p>Nenhum dado encontrado para o filtro selecionado.</p>';
@@ -69,8 +61,7 @@ window.addEventListener('load', () => {
     let totalLimpo = 0;
     let pendenciaTotalAcumulada = 0;
 
-    for (let i = 0; i < datasFiltradas.length; i++) {
-      const dataAtual = datasFiltradas[i];
+    datasFiltradas.forEach((dataAtual, i) => {
       const sujoVal = groupedData[dataAtual]?.sujo || 0;
       const limpoVal = groupedData[dataAtual]?.limpo || 0;
 
@@ -98,11 +89,11 @@ window.addEventListener('load', () => {
       if (sujo !== '-') totalSujo += sujoVal;
       if (limpo !== '-') totalLimpo += limpoVal;
       if (pendencia !== '-') pendenciaTotalAcumulada += parseFloat(pendencia.replace(',', '.'));
-    }
+    });
 
-    let pendenciaTotal = totalSujo - totalLimpo;
-    let pendenciaTotalExibida = -pendenciaTotal;
-    let pendenciaTotal10 = totalLimpo - totalSujo * 0.9;
+    const pendenciaTotal = totalSujo - totalLimpo;
+    const pendenciaTotalExibida = -pendenciaTotal;
+    const pendenciaTotal10 = totalLimpo - totalSujo * 0.9;
 
     html += '</tbody></table>';
     excelDataDiv.innerHTML = html;
@@ -111,29 +102,23 @@ window.addEventListener('load', () => {
   }
 
   function atualizarFechamento(sujo, limpo, pendencia, pendencia10) {
-    const formatarSemSinal = num => num.toFixed(1).replace('.', ',');
-    const formatarComSinal = num => {
-      const sinal = (num > 0) ? '+' : (num < 0) ? '-' : '';
-      return `${sinal}${Math.abs(num).toFixed(1).replace('.', ',')}`;
-    };
+    const formatar = n => n.toFixed(1).replace('.', ',');
+    const comSinal = n => `${n > 0 ? '+' : n < 0 ? '-' : ''}${Math.abs(n).toFixed(1).replace('.', ',')}`;
 
-    document.getElementById('totalSujo').innerText = formatarSemSinal(sujo);
-    document.getElementById('totalLimpo').innerText = formatarSemSinal(limpo);
-    document.getElementById('pendenciaTotal').innerText = formatarComSinal(pendencia);
-    document.getElementById('pendenciaTotal10').innerText = formatarComSinal(pendencia10);
+    document.getElementById('totalSujo').innerText = formatar(sujo);
+    document.getElementById('totalLimpo').innerText = formatar(limpo);
+    document.getElementById('pendenciaTotal').innerText = comSinal(pendencia);
+    document.getElementById('pendenciaTotal10').innerText = comSinal(pendencia10);
 
-    const pendenciaElem = document.getElementById('pendenciaTotal');
-    const pendencia10Elem = document.getElementById('pendenciaTotal10');
-
-    pendenciaElem.style.color = pendencia > 0 ? 'green' : (pendencia < 0 ? 'red' : 'inherit');
-    pendencia10Elem.style.color = pendencia10 > 0 ? 'green' : (pendencia10 < 0 ? 'red' : 'inherit');
+    document.getElementById('pendenciaTotal').style.color = pendencia > 0 ? 'green' : pendencia < 0 ? 'red' : 'inherit';
+    document.getElementById('pendenciaTotal10').style.color = pendencia10 > 0 ? 'green' : pendencia10 < 0 ? 'red' : 'inherit';
   }
 
   function carregarDadosDaAba(nomeAba) {
     fetch(`dados/dados.xlsx?v=${Date.now()}`)
-      .then(response => {
-        if (!response.ok) throw new Error("Arquivo Excel não encontrado");
-        return response.arrayBuffer();
+      .then(resp => {
+        if (!resp.ok) throw new Error("Arquivo Excel não encontrado");
+        return resp.arrayBuffer();
       })
       .then(data => {
         const workbook = XLSX.read(data, { type: 'array' });
@@ -141,17 +126,11 @@ window.addEventListener('load', () => {
         const jsonData = XLSX.utils.sheet_to_json(sheet, { defval: '' });
 
         groupedData = {};
-
         jsonData.forEach(row => {
-          let dataRaw = row['DATA'];
-          let dataFormatada;
-
-          if (typeof dataRaw === 'number') {
-            const dataObj = excelDateToJSDate(dataRaw);
-            dataFormatada = formatDateBRFromDateObj(dataObj);
-          } else {
-            dataFormatada = dataRaw;
-          }
+          let data = row['DATA'];
+          let dataFormatada = typeof data === 'number'
+            ? formatDateBRFromDateObj(excelDateToJSDate(data))
+            : data;
 
           const kg = parseFloat(row['KG TOTAL']) || 0;
           const tipo = row['ENVIO OU RETORNO?'].toLowerCase();
@@ -167,17 +146,16 @@ window.addEventListener('load', () => {
           }
         });
 
-        // Preencher anos removido, não é mais necessário
         filtrarEDesenharTabela();
       })
-      .catch(error => {
+      .catch(err => {
         excelDataDiv.innerText = 'Erro ao carregar a planilha.';
-        console.error('Erro ao carregar Excel:', error);
+        console.error('Erro ao carregar Excel:', err);
       });
   }
 
-  const radiosRelatorio = document.querySelectorAll('input[name="relatorio"]');
-  radiosRelatorio.forEach(radio => {
+  // Alternar abas
+  document.querySelectorAll('input[name="relatorio"]').forEach(radio => {
     radio.addEventListener('change', () => {
       if (radio.checked) {
         abaAtual = radio.value;
@@ -187,55 +165,55 @@ window.addEventListener('load', () => {
     });
   });
 
-  // Selecionar botão "Enxoval" por padrão e carregar dados
+  // Inicializar
   document.getElementById('rel-enxoval').checked = true;
   tituloTabela.textContent = 'Enxoval - registros';
   carregarDadosDaAba(abaAtual);
 
-  // Trocar os eventos dos selects antigos pelos inputs de data
+  // Filtros de data
   dataInicioInput.addEventListener('change', filtrarEDesenharTabela);
   dataFimInput.addEventListener('change', filtrarEDesenharTabela);
 
-  // Exportar em PDF
+  // Exportar PDF com logo mobile/desktop correta
   document.getElementById("btnExportarPDF").addEventListener("click", () => {
-    window.print();
+    const isMobile = window.innerWidth <= 768;
+    document.body.classList.add(isMobile ? 'print-mobile' : 'print-desktop');
+
+    setTimeout(() => {
+      window.print();
+      setTimeout(() => {
+        document.body.classList.remove('print-mobile', 'print-desktop');
+      }, 1000);
+    }, 100);
   });
 
-  // Exportar em Excel
+  // Exportar Excel
   document.getElementById("btnExportarExcel").addEventListener("click", () => {
     const tabela = document.querySelector("#excelData table");
     if (!tabela) return alert("Nenhuma tabela para exportar.");
 
     const linhas = Array.from(tabela.querySelectorAll("tr"));
-    const dados = linhas.map(linha => Array.from(linha.querySelectorAll("th, td")).map(td => td.innerText));
+    const dados = linhas.map(l => Array.from(l.querySelectorAll("th, td")).map(td => td.innerText));
 
     const worksheet = XLSX.utils.aoa_to_sheet(dados);
-
     const range = XLSX.utils.decode_range(worksheet['!ref']);
     for (let R = range.s.r; R <= range.e.r; ++R) {
       for (let C = range.s.c; C <= range.e.c; ++C) {
-        const cell_address = XLSX.utils.encode_cell({ r: R, c: C });
-        const cell = worksheet[cell_address];
-        if (cell) {
-          cell.t = 's';
-          cell.s = {
-            alignment: { horizontal: "center", vertical: "center" }
-          };
-        }
+        const cell = worksheet[XLSX.utils.encode_cell({ r: R, c: C })];
+        if (cell) cell.s = { alignment: { horizontal: "center", vertical: "center" } };
       }
     }
 
     worksheet['!cols'] = [
-      { wch: 15 },  // Data
-      { wch: 18 },  // Sujo
-      { wch: 18 },  // Limpo
-      { wch: 25 }   // Pendência
+      { wch: 15 },
+      { wch: 18 },
+      { wch: 18 },
+      { wch: 25 }
     ];
 
-    // Gerar nome do arquivo com as datas no formato yyyyMMdd para melhor ordenação
     const tipoRelatorio = abaAtual || "dados";
-    const dataInicioStr = dataInicioInput.value ? dataInicioInput.value.replace(/-/g, '') : 'inicio';
-    const dataFimStr = dataFimInput.value ? dataFimInput.value.replace(/-/g, '') : 'fim';
+    const dataInicioStr = dataInicioInput.value?.replace(/-/g, '') || 'inicio';
+    const dataFimStr = dataFimInput.value?.replace(/-/g, '') || 'fim';
     const nomeArquivo = `relatorio_${tipoRelatorio}_${dataInicioStr}_${dataFimStr}.xlsx`;
 
     const workbook = XLSX.utils.book_new();
@@ -243,9 +221,8 @@ window.addEventListener('load', () => {
     XLSX.writeFile(workbook, nomeArquivo);
   });
 
-  // Efeito de borda laranja dinâmica seguindo o mouse nos elementos com classe .tracked-glow
+  // Efeito glow de borda
   const trackedElements = document.querySelectorAll('.tracked-glow');
-
   window.addEventListener('mousemove', e => {
     trackedElements.forEach(el => {
       const rect = el.getBoundingClientRect();
@@ -255,5 +232,4 @@ window.addEventListener('load', () => {
       el.style.setProperty('--y', `${y}%`);
     });
   });
-
 });
