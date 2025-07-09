@@ -277,6 +277,17 @@ input[type="radio"]:checked + .toggle-btn {
     background-color: #201F20 !important;
     -webkit-print-color-adjust: exact;
     print-color-adjust: exact;
+    color-scheme: dark;
+  }
+  body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: #201F20;
+    z-index: -1;
   }
   .header-content {
     position: relative;
