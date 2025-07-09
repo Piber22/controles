@@ -380,6 +380,7 @@ input[type="radio"]:checked + .toggle-btn {
     padding: 8px 16px;
     font-size: 14px;
   }
+
   .exportar-relatorio button {
     padding: 8px 16px;
     margin-left: 10px;
