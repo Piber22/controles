@@ -1,6 +1,7 @@
 window.addEventListener('load', () => {
   let groupedData = {};
   let abaAtual = 'enxoval';
+  let filtrosAtivos = false;
 
   const dataInicioInput = document.getElementById('dataInicio');
   const dataFimInput = document.getElementById('dataFim');
@@ -32,6 +33,12 @@ window.addEventListener('load', () => {
   function filtrarEDesenharTabela() {
     const dataInicioVal = dataInicioInput.value ? new Date(dataInicioInput.value) : null;
     const dataFimVal = dataFimInput.value ? new Date(dataFimInput.value) : null;
+
+    if (!dataInicioVal && !dataFimVal) {
+      excelDataDiv.innerHTML = '<p>Por favor, preencha o filtro de datas para exibir os dados.</p>';
+      atualizarFechamento(0, 0, 0, 0);
+      return;
+    }
 
     const datasFiltradas = Object.keys(groupedData).filter(dataStr => {
       const dataObj = parseDateBRToDateObj(dataStr);
@@ -128,12 +135,14 @@ window.addEventListener('load', () => {
         groupedData = {};
         jsonData.forEach(row => {
           let data = row['DATA'];
+          if (!data) return;
+
           let dataFormatada = typeof data === 'number'
             ? formatDateBRFromDateObj(excelDateToJSDate(data))
             : data;
 
           const kg = parseFloat(row['KG TOTAL']) || 0;
-          const tipo = row['ENVIO OU RETORNO?'].toLowerCase();
+          const tipo = (row['ENVIO OU RETORNO?'] || '').toLowerCase();
 
           if (!groupedData[dataFormatada]) {
             groupedData[dataFormatada] = { sujo: 0, limpo: 0 };
@@ -146,7 +155,12 @@ window.addEventListener('load', () => {
           }
         });
 
-        filtrarEDesenharTabela();
+        if (filtrosAtivos) {
+          filtrarEDesenharTabela();
+        } else {
+          excelDataDiv.innerHTML = '<p>Por favor, preencha o filtro de datas para exibir os dados.</p>';
+          atualizarFechamento(0, 0, 0, 0);
+        }
       })
       .catch(err => {
         excelDataDiv.innerText = 'Erro ao carregar a planilha.';
@@ -154,31 +168,35 @@ window.addEventListener('load', () => {
       });
   }
 
-  // Alternar abas
   document.querySelectorAll('input[name="relatorio"]').forEach(radio => {
     radio.addEventListener('change', () => {
       if (radio.checked) {
         abaAtual = radio.value;
         tituloTabela.textContent = `${radio.labels[0].textContent} - registros`;
+        filtrosAtivos = false;
+        dataInicioInput.value = '';
+        dataFimInput.value = '';
+        excelDataDiv.innerHTML = '<p>Por favor, preencha o filtro de datas para exibir os dados.</p>';
+        atualizarFechamento(0, 0, 0, 0);
         carregarDadosDaAba(abaAtual);
       }
     });
   });
 
-  // Inicializar
-  document.getElementById('rel-enxoval').checked = true;
-  tituloTabela.textContent = 'Enxoval - registros';
-  carregarDadosDaAba(abaAtual);
+  dataInicioInput.addEventListener('change', () => {
+    filtrosAtivos = true;
+    filtrarEDesenharTabela();
+  });
 
-  // Filtros de data
-  dataInicioInput.addEventListener('change', filtrarEDesenharTabela);
-  dataFimInput.addEventListener('change', filtrarEDesenharTabela);
+  dataFimInput.addEventListener('change', () => {
+    filtrosAtivos = true;
+    filtrarEDesenharTabela();
+  });
 
-  // Exportar PDF com logo mobile/desktop correta
+  // PDF e Excel: mantém o mesmo
   document.getElementById("btnExportarPDF").addEventListener("click", () => {
     const isMobile = window.innerWidth <= 768;
     document.body.classList.add(isMobile ? 'print-mobile' : 'print-desktop');
-
     setTimeout(() => {
       window.print();
       setTimeout(() => {
@@ -187,7 +205,6 @@ window.addEventListener('load', () => {
     }, 100);
   });
 
-  // Exportar Excel
   document.getElementById("btnExportarExcel").addEventListener("click", () => {
     const tabela = document.querySelector("#excelData table");
     if (!tabela) return alert("Nenhuma tabela para exportar.");
