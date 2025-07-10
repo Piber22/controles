@@ -33,72 +33,87 @@ window.addEventListener('load', () => {
   }
 
   function filtrarEDesenharTabela() {
-    const dataInicioVal = dataInicioInput.value ? new Date(dataInicioInput.value) : null;
-    const dataFimVal = dataFimInput.value ? new Date(dataFimInput.value) : null;
+  const dataInicioVal = dataInicioInput.value
+    ? new Date(dataInicioInput.value)
+    : null;
 
-    if (!dataInicioVal && !dataFimVal) {
-      excelDataDiv.innerHTML = '<p>Por favor, preencha o filtro de datas para exibir os dados.</p>';
-      atualizarFechamento(0, 0, 0, 0);
-      return;
+  const dataFimVal = dataFimInput.value
+    ? new Date(new Date(dataFimInput.value).setHours(23, 59, 59, 999))
+    : null;
+
+  if (!dataInicioVal && !dataFimVal) {
+    excelDataDiv.innerHTML = '<p>Por favor, preencha o filtro de datas para exibir os dados.</p>';
+    atualizarFechamento(0, 0, 0, 0);
+    return;
+  }
+
+  const datasFiltradas = Object.keys(groupedData).filter(dataStr => {
+    const dataObj = parseDateBRToDateObj(dataStr);
+    if (dataInicioVal && dataObj < dataInicioVal) return false;
+    if (dataFimVal && dataObj > dataFimVal) return false;
+    return true;
+  }).sort(sortDatesBR);
+
+  if (datasFiltradas.length === 0) {
+    excelDataDiv.innerHTML = '<p>Nenhum dado encontrado para o filtro selecionado.</p>';
+    atualizarFechamento(0, 0, 0, 0);
+    return;
+  }
+
+  const primeiroDia = datasFiltradas[0];
+  const ultimoDia = datasFiltradas[datasFiltradas.length - 1];
+
+  let html = `<table><thead>
+    <tr>
+      <th>Data</th>
+      <th>Sujo (KG's)</th>
+      <th>Limpo (KG's)</th>
+      <th>Pendência c/ 10% (KG's)</th>
+    </tr></thead><tbody>`;
+
+  let totalSujo = 0;
+  let totalLimpo = 0;
+  let pendenciaTotalAcumulada = 0;
+
+  datasFiltradas.forEach((dataAtual, i) => {
+    const sujoVal = groupedData[dataAtual]?.sujo || 0;
+    const limpoVal = groupedData[dataAtual]?.limpo || 0;
+
+    let sujo = sujoVal > 0 ? sujoVal.toFixed(1).replace('.', ',') : '-';
+    let limpo = limpoVal > 0 ? limpoVal.toFixed(1).replace('.', ',') : '-';
+    let pendencia = '-';
+
+    if (dataAtual === primeiroDia) limpo = '-';
+    else if (dataAtual === ultimoDia) sujo = '-';
+
+    if (i > 0) {
+      const diaAnterior = datasFiltradas[i - 1];
+      const sujoAnterior = groupedData[diaAnterior]?.sujo || 0;
+      const pendenciaCalc = limpoVal - sujoAnterior * 0.9;
+      pendencia = pendenciaCalc.toFixed(1).replace('.', ',');
     }
 
-    const datasFiltradas = Object.keys(groupedData).filter(dataStr => {
-      const dataObj = parseDateBRToDateObj(dataStr);
-      if (dataInicioVal && dataObj < dataInicioVal) return false;
-      if (dataFimVal && dataObj > dataFimVal) return false;
-      return true;
-    }).sort(sortDatesBR);
+    html += `<tr>
+      <td>${dataAtual}</td>
+      <td>${sujo}</td>
+      <td>${limpo}</td>
+      <td>${pendencia}</td>
+    </tr>`;
 
-    if (datasFiltradas.length === 0) {
-      excelDataDiv.innerHTML = '<p>Nenhum dado encontrado para o filtro selecionado.</p>';
-      atualizarFechamento(0, 0, 0, 0);
-      return;
-    }
+    if (sujo !== '-') totalSujo += sujoVal;
+    if (limpo !== '-') totalLimpo += limpoVal;
+    if (pendencia !== '-') pendenciaTotalAcumulada += parseFloat(pendencia.replace(',', '.'));
+  });
 
-    const primeiroDia = datasFiltradas[0];
-    const ultimoDia = datasFiltradas[datasFiltradas.length - 1];
+  const pendenciaTotal = totalSujo - totalLimpo;
+  const pendenciaTotalExibida = -pendenciaTotal;
+  const pendenciaTotal10 = totalLimpo - totalSujo * 0.9;
 
-    let html = `<table><thead>
-      <tr>
-        <th>Data</th>
-        <th>Sujo (KG's)</th>
-        <th>Limpo (KG's)</th>
-        <th>Pendência c/ 10% (KG's)</th>
-      </tr></thead><tbody>`;
+  html += '</tbody></table>';
+  excelDataDiv.innerHTML = html;
 
-    let totalSujo = 0;
-    let totalLimpo = 0;
-    let pendenciaTotalAcumulada = 0;
-
-    datasFiltradas.forEach((dataAtual, i) => {
-      const sujoVal = groupedData[dataAtual]?.sujo || 0;
-      const limpoVal = groupedData[dataAtual]?.limpo || 0;
-
-      let sujo = sujoVal > 0 ? sujoVal.toFixed(1).replace('.', ',') : '-';
-      let limpo = limpoVal > 0 ? limpoVal.toFixed(1).replace('.', ',') : '-';
-      let pendencia = '-';
-
-      if (dataAtual === primeiroDia) limpo = '-';
-      else if (dataAtual === ultimoDia) sujo = '-';
-
-      if (i > 0) {
-        const diaAnterior = datasFiltradas[i - 1];
-        const sujoAnterior = groupedData[diaAnterior]?.sujo || 0;
-        const pendenciaCalc = limpoVal - sujoAnterior * 0.9;
-        pendencia = pendenciaCalc.toFixed(1).replace('.', ',');
-      }
-
-      html += `<tr>
-        <td>${dataAtual}</td>
-        <td>${sujo}</td>
-        <td>${limpo}</td>
-        <td>${pendencia}</td>
-      </tr>`;
-
-      if (sujo !== '-') totalSujo += sujoVal;
-      if (limpo !== '-') totalLimpo += limpoVal;
-      if (pendencia !== '-') pendenciaTotalAcumulada += parseFloat(pendencia.replace(',', '.'));
-    });
+  atualizarFechamento(totalSujo, totalLimpo, pendenciaTotalExibida, pendenciaTotal10);
+}
 
     const pendenciaTotal = totalSujo - totalLimpo;
     const pendenciaTotalExibida = -pendenciaTotal;

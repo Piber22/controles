@@ -4,7 +4,13 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="22b19769-4a7a-4da1-b361-411081e78ccf" name="Changes" comment="atualização" />
+    <list default="true" id="22b19769-4a7a-4da1-b361-411081e78ccf" name="Changes" comment="atualização">
+      <change afterPath="$PROJECT_DIR$/cronograma.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cronograma.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cronograma.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/img/login_logo.png" beforeDir="false" afterPath="$PROJECT_DIR$/img/login_logo.png" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -13,8 +19,8 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="HTML File" />
         <option value="Python Script" />
+        <option value="HTML File" />
       </list>
     </option>
   </component>
@@ -85,7 +91,7 @@
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-python-sdk-5a2391486177-d3b881c8e49f-com.jetbrains.pycharm.community.sharedIndexes.bundled-PC-233.13763.11" />
+        <option value="bundled-python-sdk-2ee2454479a3-9cdd278e9d02-com.jetbrains.pycharm.community.sharedIndexes.bundled-PC-251.25410.122" />
       </set>
     </attachedChunks>
   </component>
@@ -274,7 +280,31 @@
       <option name="project" value="LOCAL" />
       <updated>1752100452201</updated>
     </task>
-    <option name="localTasksCounter" value="23" />
+    <task id="LOCAL-00023" summary="atualização">
+      <option name="closed" value="true" />
+      <created>1752149226359</created>
+      <option name="number" value="00023" />
+      <option name="presentableId" value="LOCAL-00023" />
+      <option name="project" value="LOCAL" />
+      <updated>1752149226359</updated>
+    </task>
+    <task id="LOCAL-00024" summary="atualização">
+      <option name="closed" value="true" />
+      <created>1752149367360</created>
+      <option name="number" value="00024" />
+      <option name="presentableId" value="LOCAL-00024" />
+      <option name="project" value="LOCAL" />
+      <updated>1752149367360</updated>
+    </task>
+    <task id="LOCAL-00025" summary="atualização">
+      <option name="closed" value="true" />
+      <created>1752151160706</created>
+      <option name="number" value="00025" />
+      <option name="presentableId" value="LOCAL-00025" />
+      <option name="project" value="LOCAL" />
+      <updated>1752151160706</updated>
+    </task>
+    <option name="localTasksCounter" value="26" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
