@@ -485,7 +485,10 @@ input[type="radio"]:checked + .toggle-btn {
     left: 35px;
     top: 50%;
     transform: translateY(-50%);
-    height: 40px;
+    height: 22px;
+  }
+  header {
+    padding:30px;
   }
 }
 
