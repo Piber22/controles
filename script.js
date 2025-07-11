@@ -33,13 +33,8 @@ window.addEventListener('load', () => {
   }
 
   function filtrarEDesenharTabela() {
-  const dataInicioVal = dataInicioInput.value
-    ? new Date(dataInicioInput.value)
-    : null;
-
-  const dataFimVal = dataFimInput.value
-    ? new Date(new Date(dataFimInput.value).setHours(23, 59, 59, 999))
-    : null;
+  const dataInicioVal = dataInicioInput.value ? new Date(dataInicioInput.value) : null;
+  const dataFimVal = dataFimInput.value ? new Date(dataFimInput.value) : null;
 
   if (!dataInicioVal && !dataFimVal) {
     excelDataDiv.innerHTML = '<p>Por favor, preencha o filtro de datas para exibir os dados.</p>';
@@ -47,10 +42,15 @@ window.addEventListener('load', () => {
     return;
   }
 
+  // Ajuste: adiciona 1 dia à data final para que seja inclusiva
+  const dataFimAjustada = dataFimVal ? new Date(dataFimVal.getTime() + 86400000) : null;
+
   const datasFiltradas = Object.keys(groupedData).filter(dataStr => {
     const dataObj = parseDateBRToDateObj(dataStr);
+
     if (dataInicioVal && dataObj < dataInicioVal) return false;
-    if (dataFimVal && dataObj > dataFimVal) return false;
+    if (dataFimAjustada && dataObj >= dataFimAjustada) return false;
+
     return true;
   }).sort(sortDatesBR);
 
@@ -115,15 +115,6 @@ window.addEventListener('load', () => {
   atualizarFechamento(totalSujo, totalLimpo, pendenciaTotalExibida, pendenciaTotal10);
 }
 
-    const pendenciaTotal = totalSujo - totalLimpo;
-    const pendenciaTotalExibida = -pendenciaTotal;
-    const pendenciaTotal10 = totalLimpo - totalSujo * 0.9;
-
-    html += '</tbody></table>';
-    excelDataDiv.innerHTML = html;
-
-    atualizarFechamento(totalSujo, totalLimpo, pendenciaTotalExibida, pendenciaTotal10);
-  }
 
   function atualizarFechamento(sujo, limpo, pendencia, pendencia10) {
     const formatar = n => n.toFixed(1).replace('.', ',');
@@ -172,7 +163,6 @@ window.addEventListener('load', () => {
           }
         });
 
-        // Só desenha se filtro estiver preenchido
         if (dataInicioInput.value || dataFimInput.value) {
           filtrarEDesenharTabela();
         } else {
@@ -186,7 +176,6 @@ window.addEventListener('load', () => {
       });
   }
 
-  // Alternar abas
   document.querySelectorAll('input[name="relatorio"]').forEach(radio => {
     radio.addEventListener('change', () => {
       if (radio.checked) {
@@ -197,16 +186,13 @@ window.addEventListener('load', () => {
     });
   });
 
-  // Inicializar
   document.getElementById('rel-enxoval').checked = true;
   tituloTabela.textContent = 'Enxoval - registros';
   carregarDadosDaAba(abaAtual);
 
-  // Filtros de data
   dataInicioInput.addEventListener('change', filtrarEDesenharTabela);
   dataFimInput.addEventListener('change', filtrarEDesenharTabela);
 
-  // Exportar PDF com logo correta
   document.getElementById("btnExportarPDF").addEventListener("click", () => {
     const isMobile = window.innerWidth <= 768;
     document.body.classList.add(isMobile ? 'print-mobile' : 'print-desktop');
@@ -219,7 +205,6 @@ window.addEventListener('load', () => {
     }, 100);
   });
 
-  // Exportar Excel
   document.getElementById("btnExportarExcel").addEventListener("click", () => {
     const tabela = document.querySelector("#excelData table");
     if (!tabela) return alert("Nenhuma tabela para exportar.");
@@ -253,7 +238,6 @@ window.addEventListener('load', () => {
     XLSX.writeFile(workbook, nomeArquivo);
   });
 
-  // Efeito glow
   const trackedElements = document.querySelectorAll('.tracked-glow');
   window.addEventListener('mousemove', e => {
     trackedElements.forEach(el => {
