@@ -45,14 +45,13 @@ window.addEventListener('load', () => {
   // Ajuste: adiciona 1 dia à data final para que seja inclusiva
   const dataFimAjustada = dataFimVal ? new Date(dataFimVal.getTime() + 86400000) : null;
 
-  const datasFiltradas = Object.keys(groupedData).filter(dataStr => {
+  const datasOrdenadas = Object.keys(groupedData).sort(sortDatesBR);
+  const datasFiltradas = datasOrdenadas.filter(dataStr => {
     const dataObj = parseDateBRToDateObj(dataStr);
-
     if (dataInicioVal && dataObj < dataInicioVal) return false;
     if (dataFimAjustada && dataObj >= dataFimAjustada) return false;
-
     return true;
-  }).sort(sortDatesBR);
+  });
 
   if (datasFiltradas.length === 0) {
     excelDataDiv.innerHTML = '<p>Nenhum dado encontrado para o filtro selecionado.</p>';
@@ -62,6 +61,11 @@ window.addEventListener('load', () => {
 
   const primeiroDia = datasFiltradas[0];
   const ultimoDia = datasFiltradas[datasFiltradas.length - 1];
+
+  // 🔧 Busca o dia anterior ao primeiroDia para cálculo da pendência inicial
+  const idxPrimeiro = datasOrdenadas.indexOf(primeiroDia);
+  const diaAnterior = idxPrimeiro > 0 ? datasOrdenadas[idxPrimeiro - 1] : null;
+  const sujoDiaAnterior = diaAnterior ? groupedData[diaAnterior]?.sujo || 0 : 0;
 
   let html = `<table><thead>
     <tr>
@@ -82,15 +86,21 @@ window.addEventListener('load', () => {
     let sujo = sujoVal > 0 ? sujoVal.toFixed(1).replace('.', ',') : '-';
     let limpo = limpoVal > 0 ? limpoVal.toFixed(1).replace('.', ',') : '-';
     let pendencia = '-';
+    let pendenciaValReal = null;
 
-    if (dataAtual === primeiroDia) limpo = '-';
-    else if (dataAtual === ultimoDia) sujo = '-';
-
-    if (i > 0) {
-      const diaAnterior = datasFiltradas[i - 1];
-      const sujoAnterior = groupedData[diaAnterior]?.sujo || 0;
-      const pendenciaCalc = limpoVal - sujoAnterior * 0.9;
-      pendencia = pendenciaCalc.toFixed(1).replace('.', ',');
+    // Ajuste: mesmo no primeiro dia visível, tenta calcular a pendência com base no dia anterior ao filtro
+    if (i === 0) {
+      if (sujoDiaAnterior > 0 && limpoVal > 0) {
+        pendenciaValReal = limpoVal - sujoDiaAnterior * 0.9;
+        pendencia = pendenciaValReal.toFixed(1).replace('.', ',');
+      }
+    } else {
+      const diaAnteriorInterno = datasFiltradas[i - 1];
+      const sujoAnterior = groupedData[diaAnteriorInterno]?.sujo || 0;
+      if (sujoAnterior > 0 && limpoVal > 0) {
+        pendenciaValReal = limpoVal - sujoAnterior * 0.9;
+        pendencia = pendenciaValReal.toFixed(1).replace('.', ',');
+      }
     }
 
     html += `<tr>
@@ -100,9 +110,10 @@ window.addEventListener('load', () => {
       <td>${pendencia}</td>
     </tr>`;
 
-    if (sujo !== '-') totalSujo += sujoVal;
-    if (limpo !== '-') totalLimpo += limpoVal;
-    if (pendencia !== '-') pendenciaTotalAcumulada += parseFloat(pendencia.replace(',', '.'));
+    // Somar apenas valores permitidos no fechamento
+    if (dataAtual !== ultimoDia) totalSujo += sujoVal;
+    if (dataAtual !== primeiroDia) totalLimpo += limpoVal;
+    if (pendenciaValReal !== null) pendenciaTotalAcumulada += pendenciaValReal;
   });
 
   const pendenciaTotal = totalSujo - totalLimpo;
@@ -114,6 +125,7 @@ window.addEventListener('load', () => {
 
   atualizarFechamento(totalSujo, totalLimpo, pendenciaTotalExibida, pendenciaTotal10);
 }
+
 
 
   function atualizarFechamento(sujo, limpo, pendencia, pendencia10) {
