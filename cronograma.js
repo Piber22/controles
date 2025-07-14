@@ -108,7 +108,7 @@ window.addEventListener('DOMContentLoaded', () => {
       return;
     }
 
-    let html = `<table><thead><tr><th>DATA</th><th>TERMINAL</th><th>ENCARREGADA</th></tr></thead><tbody>`;
+    let html = `<table><thead><tr><th>DATA</th><th>TERMINAL</th><th>ENC.</th></tr></thead><tbody>`;
     dados.forEach(linha => {
       html += `<tr><td>${linha.DATA}</td><td>${linha.TERMINAL}</td><td>${linha.ENCARREGADA}</td></tr>`;
     });

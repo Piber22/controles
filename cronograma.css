@@ -277,7 +277,11 @@ main {
     max-width: 100%;
     flex: unset;
   }
-
+  .filtros {
+    max-width: 100%;
+    overflow-x: hidden;
+    padding: 10px;
+  }
   .filtros-conteudo {
     width: 100%;
     max-width: 90vw; /* OU: max-width: 300px; */
@@ -287,8 +291,18 @@ main {
     width: 100%;
     max-width: 90vw;
   }
-  .filtro-item,
-  .filtros-conteudo select,
+  .filtros-conteudo select {
+    max-width: 220px;  /* Ajuste pra um tamanho confortável */
+    width: 100%;
+    font-size: 14px;
+    padding: 6px 8px;
+  }
+
+  .filtro-item {
+    max-width: 220px;
+    width: 100%;
+  }
+
   .filtros-conteudo label {
     width: 100%;
     max-width: 90vw;
@@ -326,8 +340,8 @@ main {
 
   #excelData th,
   #excelData td {
-    font-size: 0.8rem;
-    padding: 6px 6px;
+    font-size: 14px;
+    padding: 4px 5px;
     border: 1px solid #444;
     text-align: center;
   }
