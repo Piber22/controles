@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Cronograma</title>
@@ -13,12 +12,12 @@
   <link href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css" rel="stylesheet" />
 
   <!-- CSS personalizado -->
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="cronograma.css">
 
   <!-- Font Awesome (opcional) -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
 
-  <!-- SheetJS -->
+  <!-- SheetJS e html2pdf -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js" defer></script>
 </head>
@@ -26,41 +25,75 @@
 
   <header>
     <div class="header-content">
-      <img src="img/login_logo.png" alt="Logo" class="logo logo-desktop">
+      <img src="img/login_logo2.png" alt="Logo" class="logo logo-desktop">
       <img src="img/logo.png" alt="Logo simplificada" class="logo logo-mobile">
       <h1>cronograma</h1>
-      <!-- <img src="img/topo.png" alt="Topo" class="topo-img">-->
     </div>
   </header>
+
+  <main>
   <div class="conteudo">
 
     <!-- Coluna da esquerda (vertical) -->
     <div class="coluna-esquerda">
       <div class="filtros tracked-glow">
-        <h2>Período</h2>
+         <!-- <h2>Filtros</h2> -->
         <div class="filtros-conteudo">
-          <label for="dataInicio">Data Início:</label>
-          <input type="date" id="dataInicio" />
-          <label for="dataFim">Data Fim:</label>
-          <input type="date" id="dataFim" />
+
+          <label for="filtroMes">Mês:</label>
+          <select id="filtroMes">
+            <option value="">Todos</option>
+            <option value="0">Janeiro</option>
+            <option value="1">Fevereiro</option>
+            <option value="2">Março</option>
+            <option value="3">Abril</option>
+            <option value="4">Maio</option>
+            <option value="5">Junho</option>
+            <option value="6">Julho</option>
+            <option value="7">Agosto</option>
+            <option value="8">Setembro</option>
+            <option value="9">Outubro</option>
+            <option value="10">Novembro</option>
+            <option value="11">Dezembro</option>
+          </select>
+
+          <label for="filtroData" style="margin-top: 15px;">Data:</label>
+          <select id="filtroData">
+            <option value="">Todas</option>
+            <!-- Opções serão preenchidas via JS -->
+          </select>
+
+          <label for="filtroTerminal" style="margin-top: 15px;">Terminal:</label>
+          <select id="filtroTerminal">
+            <option value="">Todos</option>
+            <!-- Opções serão preenchidas via JS -->
+          </select>
+
+          <label for="filtroEncarregada" style="margin-top: 15px;">Encarregada:</label>
+          <select id="filtroEncarregada">
+            <option value="">Todos</option>
+            <!-- Opções serão preenchidas via JS -->
+          </select>
+
         </div>
       </div>
     </div>
 
     <!-- Coluna da direita (tabela) -->
     <div class="dados tracked-glow">
-      <h2 id="tituloTabela">Tabela de dados</h2>
+      <!-- <h2 id="tituloTabela">Terminais</h2> -->
       <div id="excelData">Carregando dados...</div>
     </div>
+
   </div>
 </main>
 
-<script src="script.js"></script>
 
-</body>
-<footer class="footer">
-  <p>© 2025 Manserv Facilites. Todos os direitos reservados.</p>
-</footer>
-</html>
+
+  <script src="cronograma.js"></script>
+
+  <footer class="footer">
+    <p>© 2025 Manserv Facilites. Todos os direitos reservados.</p>
+  </footer>
 </body>
 </html>

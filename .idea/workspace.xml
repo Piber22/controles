@@ -4,7 +4,12 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="22b19769-4a7a-4da1-b361-411081e78ccf" name="Changes" comment="atualização" />
+    <list default="true" id="22b19769-4a7a-4da1-b361-411081e78ccf" name="Changes" comment="atualização">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cronograma.css" beforeDir="false" afterPath="$PROJECT_DIR$/cronograma.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cronograma.html" beforeDir="false" afterPath="$PROJECT_DIR$/cronograma.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cronograma.js" beforeDir="false" afterPath="$PROJECT_DIR$/cronograma.js" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -19,6 +24,7 @@
     </option>
   </component>
   <component name="Git.Settings">
+    <option name="PUSH_AUTO_UPDATE" value="true" />
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="GitHubPullRequestSearchHistory">{
@@ -354,7 +360,23 @@
       <option name="project" value="LOCAL" />
       <updated>1752247036699</updated>
     </task>
-    <option name="localTasksCounter" value="33" />
+    <task id="LOCAL-00033" summary="atualização">
+      <option name="closed" value="true" />
+      <created>1752247383006</created>
+      <option name="number" value="00033" />
+      <option name="presentableId" value="LOCAL-00033" />
+      <option name="project" value="LOCAL" />
+      <updated>1752247383006</updated>
+    </task>
+    <task id="LOCAL-00034" summary="atualização">
+      <option name="closed" value="true" />
+      <created>1752247398580</created>
+      <option name="number" value="00034" />
+      <option name="presentableId" value="LOCAL-00034" />
+      <option name="project" value="LOCAL" />
+      <updated>1752247398580</updated>
+    </task>
+    <option name="localTasksCounter" value="35" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
