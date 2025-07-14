@@ -136,6 +136,8 @@ main {
   color: white;
   transition: border-color 0.2s ease;
   appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
 }
 
 .filtro-item {
@@ -148,6 +150,17 @@ main {
 
 .select-wrapper {
   position: relative;
+  width: 250px;
+  max-width: 100%;
+}
+
+/* Força o select dentro do wrapper a ocupar 100% */
+.select-wrapper select {
+  width: 100%;
+  max-width: 100%;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
 }
 
 .clear-select {
