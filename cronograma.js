@@ -27,19 +27,34 @@ window.addEventListener('DOMContentLoaded', () => {
     return new Date(ano, mes - 1, dia);
   }
 
+  function preencherOpcoes(select, valores, textoTodos = 'Todos') {
+    const valorAtual = select.value;
+    select.innerHTML = '';
+    const optionPadrao = document.createElement('option');
+    optionPadrao.value = '';
+    optionPadrao.textContent = textoTodos;
+    select.appendChild(optionPadrao);
+
+    valores.forEach(v => {
+      const opt = document.createElement('option');
+      opt.value = v;
+      opt.textContent = v;
+      if (v === valorAtual) opt.selected = true;
+      select.appendChild(opt);
+    });
+  }
+
   function atualizarFiltros() {
     const terminais = new Set();
     const datas = new Set();
 
     dadosOriginais.forEach(linha => {
-      terminais.add(linha.TERMINAL);
-      datas.add(linha.DATA);
+      if (linha.TERMINAL) terminais.add(linha.TERMINAL);
+      if (linha.DATA) datas.add(linha.DATA);
     });
 
     const datasUnicas = Array.from(datas).sort((a, b) => parseDate(a) - parseDate(b));
-
-    filtroTerminal.innerHTML = '<option value="">Todos</option>' + [...terminais].map(t => `<option value="${t}">${t}</option>`).join('');
-
+    preencherOpcoes(filtroTerminal, [...terminais]);
     atualizarFiltroDataPorMes(datasUnicas);
     atualizarFiltroEncarregada();
   }
@@ -55,7 +70,7 @@ window.addEventListener('DOMContentLoaded', () => {
       });
     }
 
-    filtroData.innerHTML = '<option value="">Todas</option>' + datasDoMesSelecionado.map(d => `<option value="${d}">${d}</option>`).join('');
+    preencherOpcoes(filtroData, datasDoMesSelecionado, 'Todas');
   }
 
   function atualizarFiltroEncarregada() {
@@ -66,8 +81,8 @@ window.addEventListener('DOMContentLoaded', () => {
       dadosFiltrados = dadosOriginais.filter(linha => parseDate(linha.DATA).getMonth() === parseInt(mesSelecionado));
     }
 
-    const encarregadas = new Set(dadosFiltrados.map(l => l.ENCARREGADA));
-    filtroEncarregada.innerHTML = '<option value="">Todos</option>' + [...encarregadas].map(e => `<option value="${e}">${e}</option>`).join('');
+    const encarregadas = new Set(dadosFiltrados.map(l => l.ENCARREGADA).filter(e => e));
+    preencherOpcoes(filtroEncarregada, [...encarregadas]);
   }
 
   function aplicarFiltros() {
@@ -76,7 +91,7 @@ window.addEventListener('DOMContentLoaded', () => {
     const mesSelecionado = filtroMes.value;
     const dataSelecionada = filtroData.value;
 
-    let dadosFiltrados = dadosOriginais.filter(linha => {
+    const dadosFiltrados = dadosOriginais.filter(linha => {
       const condTerminal = terminal === '' || linha.TERMINAL === terminal;
       const condEncarregada = encarregada === '' || linha.ENCARREGADA === encarregada;
       const condMes = mesSelecionado === '' || parseDate(linha.DATA).getMonth() === parseInt(mesSelecionado);
@@ -133,6 +148,7 @@ window.addEventListener('DOMContentLoaded', () => {
       });
   }
 
+  // Eventos
   filtroTerminal.addEventListener('change', aplicarFiltros);
   filtroEncarregada.addEventListener('change', aplicarFiltros);
   filtroMes.addEventListener('change', () => {
@@ -142,6 +158,18 @@ window.addEventListener('DOMContentLoaded', () => {
     aplicarFiltros();
   });
   filtroData.addEventListener('change', aplicarFiltros);
+
+  // Botões de limpar (ícones de borracha)
+  document.querySelectorAll('.clear-select').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const targetId = btn.getAttribute('data-target');
+      const select = document.getElementById(targetId);
+      if (select) {
+        select.value = '';
+        select.dispatchEvent(new Event('change'));
+      }
+    });
+  });
 
   carregarExcel();
 });

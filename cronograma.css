@@ -1,8 +1,6 @@
-/* Reset básico */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+html, body {
+  width: 100%;
+  overflow-x: hidden;
 }
 
 body {
@@ -12,6 +10,12 @@ body {
   display: flex;
   min-height: 100vh;
   flex-direction: column;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
 header {
@@ -61,6 +65,7 @@ main {
   margin: 0 auto;
   padding: 20px;
   position: relative;
+  overflow-x: hidden;
 }
 
 .conteudo {
@@ -69,6 +74,7 @@ main {
   position: relative;
   gap: 20px;
   align-items: flex-start;
+  max-width: 100%;
 }
 
 .coluna-esquerda {
@@ -76,19 +82,21 @@ main {
   flex-direction: column;
   gap: 20px;
   flex: 1;
+  max-width: 100%;
 }
 
 /* Container filtros */
 .filtros {
+  text-align: center;
   background-color: #201F20;
   padding: 20px;
   box-shadow: 0 0 10px rgba(0,0,0,0.8);
   border-radius: 10px;
   position: relative;
   z-index: 1;
-  text-align: center;
   flex: 1;
-  transition: height 0.3s ease;
+  max-width: 100%;
+  overflow-x: auto;
 }
 
 .filtros h2 {
@@ -97,28 +105,28 @@ main {
   margin-bottom: 10px;
 }
 
-/* Filtros conteúdo (inputs + labels) */
 .filtros-conteudo {
   display: flex;
   flex-direction: column;
-  gap: 15px;
   align-items: center;
   justify-content: center;
-  margin-top: 10px;
+  width: 100%;
 }
 
 .filtros-conteudo label {
-  font-size: 14px;
+  font-size: 16px;
   font-weight: 600;
-  margin-left: 5px;
   align-self: flex-start;
   width: 100%;
   max-width: 250px;
+  margin-bottom: 10px;
 }
 
-/* Selects dos filtros */
 .filtros-conteudo select {
-  padding: 8px 12px;
+  text-align: center;
+  text-align-last: center;
+  font-family: 'Montserrat', sans-serif;
+  padding: 7px 10px;
   font-size: 14px;
   width: 100%;
   max-width: 250px;
@@ -126,15 +134,36 @@ main {
   border-radius: 6px;
   background-color: #2b2a2b;
   color: white;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.6);
   transition: border-color 0.2s ease;
   appearance: none;
 }
 
-.filtros-conteudo select:focus {
-  outline: none;
-  border-color: #E94B22;
-  box-shadow: 0 0 8px #E94B22;
+.filtro-item {
+  width: 100%;
+  max-width: 250px;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.select-wrapper {
+  position: relative;
+}
+
+.clear-select {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  color: white;
+  font-size: 14px;
+  opacity: 0.7;
+  transition: opacity 0.2s;
+}
+
+.clear-select:hover {
+  opacity: 1;
 }
 
 /* Container dados (tabela) */
@@ -148,59 +177,60 @@ main {
   z-index: 1;
   text-align: center;
   transition: height 0.3s ease;
+  max-width: 100%;
+  overflow-x: auto;
 }
 
-.dados h2 {
-  font-size: 1.4rem;
-  font-weight: 600;
-  margin-bottom: 10px;
+#excelData {
+  width: 100%;
+  overflow-x: auto;
 }
 
-/* Tabela estilizada */
+/* Tabela */
 #excelData table {
   width: 100%;
+  min-width: 100%;
   border-collapse: collapse;
   background-color: #201F20;
   color: white;
-  font-size: 14px;
-  border-radius: 4px;
+  border-radius: 1px;
   overflow: hidden;
-  box-shadow: 0 0 8px rgba(0,0,0,0.6);
+  font-size: 14px;
 }
 
 #excelData th,
 #excelData td {
-  padding: 10px 12px;
+  padding: 6px 8px;
   border: 1px solid #444;
   text-align: center;
 }
 
 #excelData th {
-  background-color: #2b2a2b;
+  background-color: #201F20;
+  color: white;
   font-weight: 600;
   text-transform: uppercase;
 }
 
 #excelData tr:nth-child(even) {
-  background-color: #2b2a2b;
+  background-color: #201F20;
 }
 
 #excelData tr:hover {
-  background-color: #E94B22;
-  color: white;
-  transition: background-color 0.3s ease;
+  background-color: #3a3a3a;
+  transition: background-color 0.2s;
 }
 
 /* Footer */
 .footer {
   background-color: #201F20;
   text-align: center;
-  padding: 10px 10px;
+  padding: 10px;
   color: #777;
   font-size: 14px;
 }
 
-/* tracked-glow efeito borda (opcional, preserve se quiser) */
+/* Efeito glow */
 .tracked-glow::before {
   content: '';
   position: absolute;
@@ -208,13 +238,9 @@ main {
   padding: 2px;
   border-radius: 10px;
   background: radial-gradient(circle at var(--x, 50%) var(--y, 50%), #E94B22 0%, transparent 50%);
-  mask:
-    linear-gradient(#fff 0 0) content-box,
-    linear-gradient(#fff 0 0);
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
   mask-composite: exclude;
-  -webkit-mask:
-    linear-gradient(#fff 0 0) content-box,
-    linear-gradient(#fff 0 0);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
   -webkit-mask-composite: destination-out;
   pointer-events: none;
   transition: opacity 0.3s ease;
@@ -222,84 +248,88 @@ main {
   z-index: 2;
 }
 
+/* Responsivo */
 @media (max-width: 768px) {
-  body {
-    overflow-x: hidden;
-  }
-  .logo-mobile {
-    display: inline;
-  }
-  .logo-desktop {
-    display: none;
-  }
-  main {
-    padding: 10px;
-  }
-  header {
-    padding: 10px;
-  }
+  .logo-mobile { display: inline; }
+  .logo-desktop { display: none; }
+
   .conteudo {
     flex-direction: column;
-    gap: 20px;
   }
+
   .coluna-esquerda,
   .dados {
+    padding: 10px;
     width: 100%;
+    max-width: 100%;
+    flex: unset;
   }
+
   .filtros-conteudo {
-    align-items: center;
-  }
-  .filtros-conteudo label,
-  .filtros-conteudo select {
-    max-width: 90vw;
     width: 100%;
+    max-width: 90vw; /* OU: max-width: 300px; */
+    padding: 0 10px;
   }
-  .logo {
-    position: static;
-    align-self: flex-start;
-    height: 22px;
+  .select-wrapper {
+    width: 100%;
+    max-width: 90vw;
   }
+  .filtro-item,
+  .filtros-conteudo select,
+  .filtros-conteudo label {
+    width: 100%;
+    max-width: 90vw;
+  }
+
   header h1 {
-    font-size: 1.5rem;
-    text-align: center;
+    font-size: 1.3rem;
     line-height: 1;
-    position: relative;
-    left: auto;
-    transform: none;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
   }
-  /* Tabela estilizada */
-#excelData table {
-  width: 100%;
-  border-collapse: collapse;
-  background-color: #201F20;
-  color: white;
-  font-size: 14px;
-  border-radius: 4px;
-  overflow: hidden;
-  box-shadow: 0 0 8px rgba(0,0,0,0.6);
-}
 
-#excelData th,
-#excelData td {
-  padding: 10px 12px;
-  border: 1px solid #444;
-  text-align: center;
-}
+  .logo {
+    height: 22px;
+    align-self: flex-start;
+    position: static;
+  }
 
-#excelData th {
-  background-color: #2b2a2b;
-  font-weight: 600;
-  text-transform: uppercase;
-}
+  #excelData {
+    width: 100%;
+    overflow-x: auto;
+  }
 
-#excelData tr:nth-child(even) {
-  background-color: #2b2a2b;
-}
+  #excelData table {
+    width: max-content;
+    min-width: 380px; /* ajuste esse valor conforme o necessário */
+    font-size: 12px;
+    border-collapse: collapse;
+    background-color: #201F20;
+    color: white;
+    border-radius: 1px;
+    overflow: hidden;
+  }
 
-#excelData tr:hover {
-  background-color: #E94B22;
-  color: white;
-  transition: background-color 0.3s ease;
-}
-}
+  #excelData th,
+  #excelData td {
+    font-size: 0.8rem;
+    padding: 6px 6px;
+    border: 1px solid #444;
+    text-align: center;
+  }
 
+  #excelData th {
+    font-weight: 600;
+    text-transform: uppercase;
+  }
+
+  #excelData tr:nth-child(even) {
+    background-color: #201F20;
+  }
+
+  #excelData tr:hover {
+    background-color: #3a3a3a;
+    transition: background-color 0.2s ease;
+  }
+}

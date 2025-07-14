@@ -37,43 +37,66 @@
     <!-- Coluna da esquerda (vertical) -->
     <div class="coluna-esquerda">
       <div class="filtros tracked-glow">
-         <!-- <h2>Filtros</h2> -->
         <div class="filtros-conteudo">
 
-          <label for="filtroMes">Mês:</label>
-          <select id="filtroMes">
-            <option value="">Todos</option>
-            <option value="0">Janeiro</option>
-            <option value="1">Fevereiro</option>
-            <option value="2">Março</option>
-            <option value="3">Abril</option>
-            <option value="4">Maio</option>
-            <option value="5">Junho</option>
-            <option value="6">Julho</option>
-            <option value="7">Agosto</option>
-            <option value="8">Setembro</option>
-            <option value="9">Outubro</option>
-            <option value="10">Novembro</option>
-            <option value="11">Dezembro</option>
-          </select>
+          <!-- Filtro Mês -->
+          <div class="filtro-item">
+            <label for="filtroMes">Mês:</label>
+            <div class="select-wrapper">
+              <select id="filtroMes">
+                <option value="">Todos</option>
+                <option value="0">Janeiro</option>
+                <option value="1">Fevereiro</option>
+                <option value="2">Março</option>
+                <option value="3">Abril</option>
+                <option value="4">Maio</option>
+                <option value="5">Junho</option>
+                <option value="6">Julho</option>
+                <option value="7">Agosto</option>
+                <option value="8">Setembro</option>
+                <option value="9">Outubro</option>
+                <option value="10">Novembro</option>
+                <option value="11">Dezembro</option>
+              </select>
+              <i class="fa-solid fa-eraser clear-select" data-target="filtroMes" title="Limpar filtro"></i>
+            </div>
+          </div>
 
-          <label for="filtroData" style="margin-top: 15px;">Data:</label>
-          <select id="filtroData">
-            <option value="">Todas</option>
-            <!-- Opções serão preenchidas via JS -->
-          </select>
+          <!-- Filtro Data -->
+          <div class="filtro-item" style="margin-top: 15px;">
+            <label for="filtroData">Data:</label>
+            <div class="select-wrapper">
+              <select id="filtroData">
+                <option value="">Todas</option>
+                <!-- Opções serão preenchidas via JS -->
+              </select>
+              <i class="fa-solid fa-eraser clear-select" data-target="filtroData" title="Limpar filtro"></i>
+            </div>
+          </div>
 
-          <label for="filtroTerminal" style="margin-top: 15px;">Terminal:</label>
-          <select id="filtroTerminal">
-            <option value="">Todos</option>
-            <!-- Opções serão preenchidas via JS -->
-          </select>
+          <!-- Filtro Terminal -->
+          <div class="filtro-item" style="margin-top: 15px;">
+            <label for="filtroTerminal">Terminal:</label>
+            <div class="select-wrapper">
+              <select id="filtroTerminal">
+                <option value="">Todos</option>
+                <!-- Opções serão preenchidas via JS -->
+              </select>
+              <i class="fa-solid fa-eraser clear-select" data-target="filtroTerminal" title="Limpar filtro"></i>
+            </div>
+          </div>
 
-          <label for="filtroEncarregada" style="margin-top: 15px;">Encarregada:</label>
-          <select id="filtroEncarregada">
-            <option value="">Todos</option>
-            <!-- Opções serão preenchidas via JS -->
-          </select>
+          <!-- Filtro Encarregada -->
+          <div class="filtro-item" style="margin-top: 15px;">
+            <label for="filtroEncarregada">Encarregada:</label>
+            <div class="select-wrapper">
+              <select id="filtroEncarregada">
+                <option value="">Todos</option>
+                <!-- Opções serão preenchidas via JS -->
+              </select>
+              <i class="fa-solid fa-eraser clear-select" data-target="filtroEncarregada" title="Limpar filtro"></i>
+            </div>
+          </div>
 
         </div>
       </div>
@@ -81,7 +104,6 @@
 
     <!-- Coluna da direita (tabela) -->
     <div class="dados tracked-glow">
-      <!-- <h2 id="tituloTabela">Terminais</h2> -->
       <div id="excelData">Carregando dados...</div>
     </div>
 
