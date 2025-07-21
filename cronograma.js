@@ -55,6 +55,11 @@ window.addEventListener('DOMContentLoaded', () => {
 
     const datasUnicas = Array.from(datas).sort((a, b) => parseDate(a) - parseDate(b));
     preencherOpcoes(filtroTerminal, [...terminais]);
+
+    // Define mês atual
+    const mesAtual = new Date().getMonth(); // 0 = janeiro
+    filtroMes.value = mesAtual.toString();
+
     atualizarFiltroDataPorMes(datasUnicas);
     atualizarFiltroEncarregada();
   }

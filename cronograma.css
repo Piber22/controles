@@ -85,7 +85,6 @@ main {
   max-width: 100%;
 }
 
-/* Container filtros */
 .filtros {
   text-align: center;
   background-color: #201F20;
@@ -97,6 +96,7 @@ main {
   flex: 1;
   max-width: 100%;
   overflow-x: auto;
+  box-sizing: border-box;
 }
 
 .filtros h2 {
@@ -136,8 +136,6 @@ main {
   color: white;
   transition: border-color 0.2s ease;
   appearance: none;
-  -webkit-appearance: none;
-  -moz-appearance: none;
 }
 
 .filtro-item {
@@ -150,17 +148,6 @@ main {
 
 .select-wrapper {
   position: relative;
-  width: 250px;
-  max-width: 100%;
-}
-
-/* Força o select dentro do wrapper a ocupar 100% */
-.select-wrapper select {
-  width: 100%;
-  max-width: 100%;
-  appearance: none;
-  -webkit-appearance: none;
-  -moz-appearance: none;
 }
 
 .clear-select {
@@ -179,7 +166,6 @@ main {
   opacity: 1;
 }
 
-/* Container dados (tabela) */
 .dados {
   background-color: #201F20;
   padding: 20px;
@@ -192,6 +178,7 @@ main {
   transition: height 0.3s ease;
   max-width: 100%;
   overflow-x: auto;
+  box-sizing: border-box;
 }
 
 #excelData {
@@ -199,7 +186,6 @@ main {
   overflow-x: auto;
 }
 
-/* Tabela */
 #excelData table {
   width: 100%;
   min-width: 100%;
@@ -234,7 +220,6 @@ main {
   transition: background-color 0.2s;
 }
 
-/* Footer */
 .footer {
   background-color: #201F20;
   text-align: center;
@@ -243,7 +228,6 @@ main {
   font-size: 14px;
 }
 
-/* Efeito glow */
 .tracked-glow::before {
   content: '';
   position: absolute;
@@ -261,7 +245,6 @@ main {
   z-index: 2;
 }
 
-/* Responsivo */
 @media (max-width: 768px) {
   .logo-mobile { display: inline; }
   .logo-desktop { display: none; }
@@ -271,38 +254,28 @@ main {
   }
 
   .coluna-esquerda,
-  .dados {
+  .dados,
+  .filtros {
     padding: 10px;
     width: 100%;
     max-width: 100%;
     flex: unset;
+    box-sizing: border-box;
   }
-  .filtros {
-    max-width: 100%;
-    overflow-x: hidden;
-    padding: 10px;
-  }
+
   .filtros-conteudo {
     width: 100%;
-    max-width: 90vw; /* OU: max-width: 300px; */
+    max-width: 90vw;
     padding: 0 10px;
   }
+
   .select-wrapper {
     width: 100%;
     max-width: 90vw;
   }
-  .filtros-conteudo select {
-    max-width: 220px;  /* Ajuste pra um tamanho confortável */
-    width: 100%;
-    font-size: 14px;
-    padding: 6px 8px;
-  }
 
-  .filtro-item {
-    max-width: 220px;
-    width: 100%;
-  }
-
+  .filtro-item,
+  .filtros-conteudo select,
   .filtros-conteudo label {
     width: 100%;
     max-width: 90vw;
@@ -329,7 +302,7 @@ main {
 
   #excelData table {
     width: max-content;
-    min-width: 380px; /* ajuste esse valor conforme o necessário */
+    min-width: 380px;
     font-size: 12px;
     border-collapse: collapse;
     background-color: #201F20;
@@ -340,8 +313,8 @@ main {
 
   #excelData th,
   #excelData td {
-    font-size: 14px;
-    padding: 4px 5px;
+    font-size: 0.8rem;
+    padding: 6px 6px;
     border: 1px solid #444;
     text-align: center;
   }
